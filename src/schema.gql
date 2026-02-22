@@ -10,6 +10,11 @@ input CreateIngredientInput {
   name: String!
 }
 
+input CreatePermissionInput {
+  description: String
+  name: String!
+}
+
 input CreatePizzaInput {
   """Ids of the ingredients"""
   ingredientIds: [Int!]
@@ -19,6 +24,11 @@ input CreatePizzaInput {
 
   """Price of the pizza"""
   price: Float!
+}
+
+input CreateRoleInput {
+  name: String!
+  permissionIds: [Int]
 }
 
 type Ingredient {
@@ -34,7 +44,9 @@ type Ingredient {
 
 type Mutation {
   createIngredient(createIngredientInput: CreateIngredientInput!): Ingredient!
+  createPermission(input: CreatePermissionInput!): Permission!
   createPizza(createPizzaInput: CreatePizzaInput!): Pizza!
+  createRole(input: CreateRoleInput!): Role!
   removeIngredient(id: Int!): Ingredient!
   removePizza(id: Int!): Pizza!
   updateIngredient(updateIngredientInput: UpdateIngredientInput!): Ingredient!

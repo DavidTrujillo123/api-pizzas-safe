@@ -1,0 +1,88 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateIngredientInput {
+  """Calories per serving"""
+  calories: Int
+
+  """Name of the ingredient"""
+  name: String!
+}
+
+input CreatePizzaInput {
+  """Ids of the ingredients"""
+  ingredientIds: [Int!]
+
+  """Name of the pizza"""
+  name: String!
+
+  """Price of the pizza"""
+  price: Float!
+}
+
+type Ingredient {
+  """Calories per serving (optional)"""
+  calories: Int!
+
+  """ID of the ingredient"""
+  id: Int!
+
+  """Name of the ingredient"""
+  name: String!
+}
+
+type Mutation {
+  createIngredient(createIngredientInput: CreateIngredientInput!): Ingredient!
+  createPizza(createPizzaInput: CreatePizzaInput!): Pizza!
+  removeIngredient(id: Int!): Ingredient!
+  removePizza(id: Int!): Pizza!
+  updateIngredient(updateIngredientInput: UpdateIngredientInput!): Ingredient!
+  updatePizza(updatePizzaInput: UpdatePizzaInput!): Pizza!
+}
+
+type Pizza {
+  """ID of the pizza"""
+  id: Int!
+
+  """List of ingredients in the pizza"""
+  ingredients: [Ingredient]!
+
+  """Name of the pizza"""
+  name: String!
+
+  """Price of the pizza"""
+  price: Float!
+}
+
+type Query {
+  ingredient(id: Int!): Ingredient!
+  ingredients: [Ingredient!]!
+  pizza(id: Int!): Pizza!
+  pizzas: [Pizza!]!
+}
+
+input UpdateIngredientInput {
+  """Calories per serving"""
+  calories: Int
+
+  """ID of the ingredient"""
+  id: Int!
+
+  """Name of the ingredient"""
+  name: String
+}
+
+input UpdatePizzaInput {
+  """ID of the pizza"""
+  id: Int!
+
+  """Ids of the ingredients"""
+  ingredientIds: [Int!]
+
+  """Name of the pizza"""
+  name: String
+
+  """Price of the pizza"""
+  price: Float
+}

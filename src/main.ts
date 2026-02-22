@@ -5,8 +5,11 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { validateEnvironmentVars } from './config/env.validation';
 
 async function bootstrap() {
+  validateEnvironmentVars();
+
   const app = await NestFactory.create(AppModule);
 
   // Configuration Service

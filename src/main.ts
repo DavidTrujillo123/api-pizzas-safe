@@ -64,8 +64,14 @@ async function bootstrap() {
   );
 
   // Rate Limiting from .env
-  const windowMs = configService.get<number>('RATE_LIMIT_WINDOW_MS')!;
-  const maxRequests = configService.get<number>('RATE_LIMIT_MAX_REQUESTS')!;
+  const windowMs = parseInt(
+    configService.get<string>('RATE_LIMIT_WINDOW_MS')!,
+    10,
+  );
+  const maxRequests = parseInt(
+    configService.get<string>('RATE_LIMIT_MAX_REQUESTS')!,
+    10,
+  );
 
   app.use(
     rateLimit({
@@ -82,8 +88,29 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth() // Soporte para JWT
     .addApiKey({ type: 'apiKey', name: 'X-API-KEY', in: 'header' }, 'X-API-KEY') // Soporte para API Key
+    .addSecurity('X-API-KEY', {
+      type: 'apiKey',
+      name: 'X-API-KEY',
+      in: 'header',
+    })
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
+
+  // Forzar que el esquema de seguridad aplique a todas las rutas documentadas
+  for (const path in document.paths) {
+    for (const method in document.paths[path]) {
+      const operation = document.paths[path][method];
+      operation.security = operation.security || [];
+
+      // Añadir X-API-KEY a las colecciones de seguridad de cada operación
+      const hasApiKey = operation.security.some((sec: any) => sec['X-API-KEY']);
+      if (!hasApiKey) {
+        operation.security.push({ 'X-API-KEY': [] });
+      }
+    }
+  }
+
   SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(port);

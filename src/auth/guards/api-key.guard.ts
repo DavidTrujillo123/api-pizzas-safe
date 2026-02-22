@@ -22,7 +22,12 @@ export class ApiKeyGuard implements CanActivate {
       request = context.switchToHttp().getRequest();
     }
 
-    const providedApiKey = request.headers['x-api-key'];
+    let providedApiKey = request.headers['x-api-key'];
+
+    // Algunas peticiones pueden enviarlo en mayúsculas dependiendo del cliente
+    if (!providedApiKey) {
+      providedApiKey = request.headers['X-API-KEY'];
+    }
 
     if (!providedApiKey || providedApiKey !== apiKey) {
       throw new UnauthorizedException('Invalid or missing API Key (X-API-KEY)');

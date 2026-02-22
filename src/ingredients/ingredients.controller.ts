@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,6 +19,8 @@ import { IngredientsService } from './ingredients.service';
 import { CreateIngredientInput } from './dto/create-ingredient.input';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { Ingredient } from './entities/ingredient.entity';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiBearerAuth()
 @ApiTags('ingredients')
@@ -26,6 +29,8 @@ export class IngredientsController {
   constructor(private readonly ingredientsService: IngredientsService) {}
 
   @Post()
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @ApiOperation({ summary: 'Create a new ingredient' })
   @ApiResponse({
     status: 201,
@@ -59,6 +64,8 @@ export class IngredientsController {
   }
 
   @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @ApiOperation({ summary: 'Update an ingredient' })
   @ApiResponse({
     status: 200,
@@ -76,6 +83,8 @@ export class IngredientsController {
   }
 
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @ApiOperation({ summary: 'Delete an ingredient' })
   @ApiResponse({
     status: 200,

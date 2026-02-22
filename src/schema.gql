@@ -41,6 +41,12 @@ type Mutation {
   updatePizza(updatePizzaInput: UpdatePizzaInput!): Pizza!
 }
 
+type Permission {
+  description: String
+  id: Int!
+  name: String!
+}
+
 type Pizza {
   """ID of the pizza"""
   id: Int!
@@ -60,6 +66,14 @@ type Query {
   ingredients: [Ingredient!]!
   pizza(id: Int!): Pizza!
   pizzas: [Pizza!]!
+  roles: [Role!]!
+}
+
+type Role {
+  id: Int!
+  name: String!
+  permissions: [Permission!]!
+  users: [User!]!
 }
 
 input UpdateIngredientInput {
@@ -85,4 +99,10 @@ input UpdatePizzaInput {
 
   """Price of the pizza"""
   price: Float
+}
+
+type User {
+  id: Int!
+  role: Role!
+  username: String!
 }

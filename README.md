@@ -77,6 +77,15 @@ La API utiliza un sistema de autenticación basado en **JWT (JSON Web Tokens)** 
 - **Cómo usar en GraphQL:**
   - Incluye la cabecera `Authorization: Bearer <tu_token>` en la sección de "HTTP Headers" de tu cliente o Playground.
 
+### 👥 Roles y Usuarios (RBAC)
+
+El sistema soporta jerarquía de roles para diferenciar capacidades:
+
+| Rol       | Capacidades             | Usuarios de Prueba   |
+| :-------- | :---------------------- | :------------------- |
+| **Admin** | Lectura/Escritura total | `admin` / `admin123` |
+| **User**  | Solo Lectura            | `user` / `user123`   |
+
 2. **Instalar Dependencias:**
 
    ```bash

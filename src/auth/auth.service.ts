@@ -2,35 +2,35 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
-  // Simularemos un usuario por simplicidad como se acordó en el plan
-  private readonly mockUser = {
-    id: 1,
-    username: 'admin',
-    // Password 'admin123' hasheado
-    password: '$2b$10$X7vQW9M7vQW9M7vQW9M7vOuQ2uB3vR.W3vR.W3vR.W3vR.W3vR.W.',
-  };
-
   constructor(
+    private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
   async login(username: string, pass: string) {
-    // Validar contra el mockUser
-    // Por simplicidad en este paso, si es admin/admin123 permitimos (en un app real iría a BDD)
-    if (username !== 'admin' || pass !== 'admin123') {
+    const user = await this.usersService.findByUsername(username);
+
+    // En producción usaríamos bcrypt.compare(pass, user.password)
+    // Por simplicidad y consistencia con el seeder que haré con texto plano o pass conocido:
+    if (!user || user.password !== pass) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { username: this.mockUser.username, sub: this.mockUser.id };
+    const payload = {
+      username: user.username,
+      sub: user.id,
+      role: user.role.name, // Inyectamos el nombre del rol en el JWT
+    };
 
     return {
       access_token: this.jwtService.sign(payload),
       refresh_token: this.jwtService.sign(payload, {
-        expiresIn: '7d', // Refresh token dura más
+        expiresIn: '7d',
         secret:
           this.configService.get<string>('JWT_REFRESH_SECRET') ||
           'refreshSecret',
@@ -46,7 +46,15 @@ export class AuthService {
           'refreshSecret',
       });
 
-      const newPayload = { username: payload.username, sub: payload.sub };
+      const user = await this.usersService.findOne(payload.sub);
+      if (!user) throw new UnauthorizedException();
+
+      const newPayload = {
+        username: user.username,
+        sub: user.id,
+        role: user.role.name,
+      };
+
       return {
         access_token: this.jwtService.sign(newPayload),
       };

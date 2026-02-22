@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,6 +19,8 @@ import { PizzasService } from './pizzas.service';
 import { CreatePizzaInput } from './dto/create-pizza.input';
 import { UpdatePizzaDto } from './dto/update-pizza.dto';
 import { Pizza } from './entities/pizza.entity';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiBearerAuth()
 @ApiTags('pizzas')
@@ -26,6 +29,8 @@ export class PizzasController {
   constructor(private readonly pizzasService: PizzasService) {}
 
   @Post()
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @ApiOperation({ summary: 'Create a new pizza' })
   @ApiResponse({
     status: 201,
@@ -59,6 +64,8 @@ export class PizzasController {
   }
 
   @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @ApiOperation({ summary: 'Update a pizza' })
   @ApiResponse({
     status: 200,
@@ -73,6 +80,8 @@ export class PizzasController {
   }
 
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @ApiOperation({ summary: 'Delete a pizza' })
   @ApiResponse({
     status: 200,

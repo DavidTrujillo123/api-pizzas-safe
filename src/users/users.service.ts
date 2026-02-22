@@ -13,15 +13,21 @@ export class UsersService {
   async findByUsername(username: string): Promise<User | undefined> {
     const user = await this.usersRepository.findOne({
       where: { username },
-      relations: ['role', 'role.permissions'],
+      relations: ['role', 'role.permissions', 'devices'],
     });
     return user || undefined;
+  }
+
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find({
+      relations: ['role', 'role.permissions', 'devices'],
+    });
   }
 
   async findOne(id: number): Promise<User | undefined> {
     const user = await this.usersRepository.findOne({
       where: { id },
-      relations: ['role', 'role.permissions'],
+      relations: ['role', 'role.permissions', 'devices'],
     });
     return user || undefined;
   }

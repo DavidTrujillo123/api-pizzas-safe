@@ -12,6 +12,7 @@ import { RolesModule } from './roles/roles.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ApiKeyGuard } from './auth/guards/api-key.guard';
+import { DevicesModule } from './devices/devices.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { ApiKeyGuard } from './auth/guards/api-key.guard';
     AuthModule,
     UsersModule,
     RolesModule,
+    DevicesModule,
   ],
   controllers: [],
   providers: [

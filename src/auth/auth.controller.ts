@@ -1,4 +1,12 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Req,
+} from '@nestjs/common';
+import type { Request } from 'express';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -16,8 +24,19 @@ export class AuthController {
   @ApiOperation({ summary: 'Login to get access and refresh tokens' })
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto.username, loginDto.password);
+  async login(@Body() loginDto: LoginDto, @Req() req: Request) {
+    const ip =
+      (req.headers['x-forwarded-for'] as string) ||
+      req.socket.remoteAddress ||
+      'Unknown IP';
+    const userAgent = req.headers['user-agent'] || 'Unknown Device';
+
+    return this.authService.login(
+      loginDto.username,
+      loginDto.password,
+      ip,
+      userAgent,
+    );
   }
 
   @Public() // Endpoint público

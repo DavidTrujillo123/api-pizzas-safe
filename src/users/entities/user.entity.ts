@@ -5,8 +5,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
+import { Device } from '../../devices/entities/device.entity';
 
 @Entity('users')
 @ObjectType()
@@ -30,4 +32,8 @@ export class User {
 
   @Column({ name: 'role_id' })
   roleId: number;
+
+  @Field(() => [Device], { nullable: 'itemsAndList' })
+  @OneToMany(() => Device, (device) => device.user)
+  devices: Device[];
 }

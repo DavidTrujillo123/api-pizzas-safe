@@ -5,6 +5,7 @@ import { Pizza } from '../pizzas/entities/pizza.entity';
 import { User } from '../users/entities/user.entity';
 import { Role } from '../roles/entities/role.entity';
 import { Permission } from '../roles/entities/permission.entity';
+import { Device } from '../devices/entities/device.entity';
 
 config();
 
@@ -17,7 +18,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME!,
   synchronize: false,
   logging: true,
-  entities: [Ingredient, Pizza, User, Role, Permission],
+  entities: [Ingredient, Pizza, User, Role, Permission, Device],
   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
   subscribers: [],
 });

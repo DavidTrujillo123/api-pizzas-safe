@@ -31,6 +31,20 @@ input CreateRoleInput {
   permissionIds: [Int]
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Device {
+  deviceType: String!
+  id: ID!
+  ipAddress: String!
+  location: String
+  loginAt: DateTime!
+  user: User!
+}
+
 type Ingredient {
   """Calories per serving (optional)"""
   calories: Int!
@@ -114,6 +128,7 @@ input UpdatePizzaInput {
 }
 
 type User {
+  devices: [Device]
   id: Int!
   role: Role!
   username: String!

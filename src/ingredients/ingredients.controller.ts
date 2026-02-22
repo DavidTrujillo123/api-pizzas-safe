@@ -8,12 +8,18 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientInput } from './dto/create-ingredient.input';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { Ingredient } from './entities/ingredient.entity';
 
+@ApiBearerAuth()
 @ApiTags('ingredients')
 @Controller('ingredients')
 export class IngredientsController {

@@ -79,6 +79,7 @@ async function bootstrap() {
     .setTitle('Pizzas API')
     .setDescription('Pizza and Ingredients Management System')
     .setVersion('1.0')
+    .addBearerAuth() // Soporte para JWT
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

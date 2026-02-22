@@ -61,6 +61,21 @@ El proyecto se gestiona íntegramente desde el archivo `.env`. Puedes configurar
   - `RATE_LIMIT_MAX_REQUESTS`: Peticiones máximas por IP.
 - **Entorno:** `NODE_ENV` (development/production).
 - **GraphQL:** `GRAPHQL_PLAYGROUND` (true/false) para habilitar la interfaz de pruebas.
+- **Autenticación:** `JWT_SECRET` y `JWT_REFRESH_SECRET` para firmar los tokens.
+
+### 🛡 Autenticación y Seguridad
+
+La API utiliza un sistema de autenticación basado en **JWT (JSON Web Tokens)** con soporte para **Access Tokens** (corta duración) y **Refresh Tokens** (larga duración).
+
+- **Protección Global:** Todas las rutas (REST y GraphQL) están protegidas por defecto.
+- **Acceso Público:** Solo los endpoints de `/auth/login` y `/auth/refresh` son públicos.
+- **Cómo usar en Swagger:**
+  1. Haz login en el endpoint `POST /auth/login`.
+  2. Copia el `access_token`.
+  3. Haz clic en el botón **"Authorize"** (candado) arriba a la derecha en Swagger.
+  4. Pega el token con el formato `Bearer <tu_token>`.
+- **Cómo usar en GraphQL:**
+  - Incluye la cabecera `Authorization: Bearer <tu_token>` en la sección de "HTTP Headers" de tu cliente o Playground.
 
 2. **Instalar Dependencias:**
 

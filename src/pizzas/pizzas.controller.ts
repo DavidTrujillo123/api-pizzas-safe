@@ -8,12 +8,18 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { PizzasService } from './pizzas.service';
 import { CreatePizzaInput } from './dto/create-pizza.input';
 import { UpdatePizzaDto } from './dto/update-pizza.dto';
 import { Pizza } from './entities/pizza.entity';
 
+@ApiBearerAuth()
 @ApiTags('pizzas')
 @Controller('pizzas')
 export class PizzasController {

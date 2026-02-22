@@ -24,12 +24,31 @@ export class DevicesService {
         ? '127.0.0.1'
         : ipAddress;
 
-    const geo = geoip.lookup(cleanIp);
+    const isLocal = cleanIp === '127.0.0.1';
+    let lookupIp = cleanIp;
+
+    // Si es local, intentamos obtener la IP pública para dar una ubicación real al usuario en desarrollo
+    if (isLocal) {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data: any = await response.json();
+        if (data && data.ip) {
+          lookupIp = data.ip;
+        }
+      } catch (error) {
+        console.error(
+          'Error fetching public IP for localhost geolocation:',
+          error.message,
+        );
+      }
+    }
+
+    const geo = geoip.lookup(lookupIp);
     let location = 'Unknown Location';
 
     if (geo) {
       location = `${geo.city || 'Unknown City'}, ${geo.country}`;
-    } else if (cleanIp === '127.0.0.1') {
+    } else if (isLocal && lookupIp === cleanIp) {
       location = 'Localhost';
     }
 

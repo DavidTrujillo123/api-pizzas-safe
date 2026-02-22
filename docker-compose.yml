@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: pizzas_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pizzas_db
+    ports:
+      - '5431:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Puedes descomentar esto si quieres levantar la API también por Docker Compose
+  # api:
+  #   build:
+  #     context: .
+  #   container_name: pizzas_api
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - DB_HOST=db
+
+volumes:
+  postgres_data:

@@ -33,11 +33,19 @@ API robusta construida con **NestJS**, **GraphQL** (Code First) y **TypeORM** pa
 - [pnpm](https://pnpm.io/)
 - [Docker Desktop](https://www.docker.com/)
 
+## 🐳 Infraestructura con Docker Compose
+
+El archivo `docker-compose.yml` se encarga de orquestar los servicios necesarios para el proyecto:
+
+- **Base de Datos (PostgreSQL v15):** Levanta un contenedor con PostgreSQL.
+- **Puerto 5431:** Se ha mapeado el puerto interno `5432` al puerto externo `5431` de tu máquina para evitar conflictos si ya tienes otras instancias de Postgres ejecutándose.
+- **Persistencia:** Utiliza un volumen llamado `postgres_data` para que tus pizzas e ingredientes no se pierdan al apagar los contenedores.
+- **Healthchecks:** Incluye validaciones para asegurar que la base de datos esté lista antes de que la aplicación intente conectarse.
+
 ## 🏁 Inicio Rápido
 
 1. **Levantar la Infraestructura (Docker):**
-   La base de datos PostgreSQL se levanta en el puerto **5431** para evitar conflictos.
-
+   Asegúrate de estar en la carpeta `backend` y ejecuta:
    ```bash
    docker-compose up -d
    ```

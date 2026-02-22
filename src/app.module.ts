@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { ApiKeyGuard } from './auth/guards/api-key.guard';
 
 @Module({
   imports: [
@@ -59,6 +60,10 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
   ],
   controllers: [],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ApiKeyGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

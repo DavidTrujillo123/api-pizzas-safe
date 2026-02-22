@@ -1,129 +1,76 @@
 # 🍕 Pizzas & Ingredients GraphQL API
 
-API robusta construida con **NestJS**, **GraphQL** (Code First) y **TypeORM** para la gestión de un catálogo de pizzas e ingredientes, con un enfoque fuerte en **seguridad** y **escalabilidad**.
-
-## 🛠 Tech Stack
-
-- **Framework:** [NestJS](https://nestjs.com/) v11
-- **API:** [GraphQL](https://graphql.org/) (Apollo Server)
-- **Base de Datos:** [PostgreSQL](https://www.postgresql.org/) v15
-- **ORM:** [TypeORM](https://typeorm.io/)
-- **Seguridad:** Helmet, Express Rate Limit, class-validator
-- **Contenedores:** Docker & Docker Compose
-- **Gestor de Paquetes:** pnpm
+API robusta construida con **NestJS**, **GraphQL (Apollo)** y **TypeORM (PostgreSQL)**, diseñada con un enfoque en seguridad multicapa y gestión relacional.
 
 ## 🚀 Características Principales
 
-- **GraphQL API:** Consultas y mutaciones completas para Pizzas e Ingredientes con validación integrada.
-- **Relación N:M:** Gestión avanzada de ingredientes por pizza mediante tablas intermedias automáticas en TypeORM.
-- **Seguridad:**
-  - **Helmet:** Cabeceras de seguridad configuradas (ajustadas para permitir GraphQL Playground).
-  - **Rate Limiting:** Máximo 100 peticiones cada 15 minutos por IP.
-  - **CORS:** Configurado para acceso externo seguro.
-- **Documentación:**
-  - **Swagger UI:** `/api/docs` para una visión global de la API (útil para integración híbrida).
-  - **GraphQL Playground:** `/graphql` para pruebas interactivas de esquemas.
-- **Base de Datos:**
-  - **Migraciones:** Gestión profesional de cambios en el esquema.
-  - **Seeders:** Datos iniciales listos para poblar el catálogo local.
+- **CRUD Completo:** Gestión de Pizzas e Ingredientes con relaciones muchos-a-muchos.
+- **Triple Capa de Seguridad:** API Key Global, Autenticación JWT y RBAC (Roles y Permisos).
+- **Documentación Dual:** GraphQL Playground para exploraciones y Swagger para la API REST.
+- **Arquitectura Escalable:** Gestión dinámica de roles y permisos por parte de administradores.
+- **Dockerizado:** Entorno listo para desarrollo con un solo comando.
 
-## 📋 Requisitos Previos
+---
 
-- [Node.js](https://nodejs.org/) (v20+)
-- [pnpm](https://pnpm.io/)
-- [Docker Desktop](https://www.docker.com/)
+## 🛡️ Seguridad y Autenticación
 
-## 🐳 Infraestructura con Docker Compose
+La API implementa un modelo de seguridad "Zero Trust":
 
-El archivo `docker-compose.yml` se encarga de orquestar los servicios necesarios para el proyecto:
+1.  **API Key Global:** Todas las peticiones deben incluir la cabecera `X-API-KEY: pizzas-secret-api-key-2026`.
+2.  **JWT (Access & Refresh Tokens):** Tras validar la API Key, los endpoints protegidos requieren un Bearer Token.
+3.  **RBAC (Role-Based Access Control):**
+    - **Admin:** Acceso total a mutaciones (escritura) y gestión del sistema.
+    - **User:** Acceso restringido a solo lectura (queries).
 
-- **Base de Datos (PostgreSQL v15):** Levanta un contenedor con PostgreSQL.
-- **Puerto 5431:** Se ha mapeado el puerto interno `5432` al puerto externo `5431` de tu máquina para evitar conflictos si ya tienes otras instancias de Postgres ejecutándose.
-- **Persistencia:** Utiliza un volumen llamado `postgres_data` para que tus pizzas e ingredientes no se pierdan al apagar los contenedores.
-- **Healthchecks:** Incluye validaciones para asegurar que la base de datos esté lista antes de que la aplicación intente conectarse.
+---
 
-## 🏁 Inicio Rápido
+## 🛠️ Instalación y Configuración
 
-1. **Levantar la Infraestructura (Docker):**
-   Asegúrate de estar en la carpeta `backend` y ejecuta:
-   ```bash
-   docker-compose up -d
-   ```
+### 1. Clonar y Configurar Entorno
 
-### Configuración Centralizada (.env)
+```bash
+cp .env.example .env
+# Ajusta tus credenciales en el archivo .env si es necesario
+```
 
-El proyecto se gestiona íntegramente desde el archivo `.env`. Puedes configurar:
+### 2. Levantar Infraestructura (Docker)
 
-- **Base de Datos:** Host, puerto (5431), credenciales.
-- **Seguridad:**
-  - `CORS_ORIGIN`: Dominios permitidos (ej. `http://localhost:4200`).
-  - `RATE_LIMIT_WINDOW_MS`: Ventana de tiempo para límites.
-  - `RATE_LIMIT_MAX_REQUESTS`: Peticiones máximas por IP.
-- **Entorno:** `NODE_ENV` (development/production).
-- **GraphQL:** `GRAPHQL_PLAYGROUND` (true/false) para habilitar la interfaz de pruebas.
-- **Autenticación:** `JWT_SECRET` y `JWT_REFRESH_SECRET` para firmar los tokens.
+```bash
+docker-compose up -d
+```
 
-### 🛡 Autenticación y Seguridad
+### 3. Iniciar Aplicación
 
-La API utiliza un sistema de autenticación basado en **JWT (JSON Web Tokens)** con soporte para **Access Tokens** (corta duración) y **Refresh Tokens** (larga duración).
+```bash
+pnpm install
+pnpm start:dev
+```
 
-- **Protección Global:** Todas las rutas (REST y GraphQL) están protegidas por defecto.
-- **Acceso Público:** Solo los endpoints de `/auth/login` y `/auth/refresh` son públicos.
-- **Cómo usar en Swagger:**
-  1. Haz login en el endpoint `POST /auth/login`.
-  2. Copia el `access_token`.
-  3. Haz clic en el botón **"Authorize"** (candado) arriba a la derecha en Swagger.
-  4. Pega el token con el formato `Bearer <tu_token>`.
-- **Cómo usar en GraphQL:**
-  - Incluye la cabecera `Authorization: Bearer <tu_token>` en la sección de "HTTP Headers" de tu cliente o Playground.
+### 4. Poblar Base de Datos (Opcional)
 
-### 👥 Roles y Usuarios (RBAC)
+```bash
+pnpm seed
+```
 
-El sistema soporta jerarquía de roles para diferenciar capacidades:
+---
 
-| Rol       | Capacidades             | Usuarios de Prueba   |
-| :-------- | :---------------------- | :------------------- |
-| **Admin** | Lectura/Escritura total | `admin` / `admin123` |
-| **User**  | Solo Lectura            | `user` / `user123`   |
+## 📚 Documentación de API
 
-2. **Instalar Dependencias:**
+- **Swagger (REST):** [http://localhost:5431/api/docs](http://localhost:5431/api/docs)
+- **GraphQL Playground:** [http://localhost:5431/graphql](http://localhost:5431/graphql)
 
-   ```bash
-   cd backend
-   pnpm install
-   ```
+### Usuarios de Prueba (Seeder)
 
-3. **Configurar la Base de Datos (Tablas y Datos):**
-   Una vez que el contenedor de Docker esté corriendo, ejecuta estos comandos para crear las tablas y cargar los datos iniciales:
+- **Admin:** `admin` / `admin123`
+- **User:** `user` / `user123`
 
-   ```bash
-   # Crear las tablas (Migraciones)
-   pnpm migration:run
+---
 
-   # Cargar datos de prueba (Seeders)
-   pnpm seed
-   ```
+## ⚙️ Tecnologías Utilizadas
 
-4. **Iniciar en Desarrollo:**
-   ```bash
-   pnpm start:dev
-   ```
-
-## 🔌 Endpoints
-
-- **GraphQL Playground:** [http://localhost:3000/graphql](http://localhost:3000/graphql)
-- **Swagger Docs:** [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
-
-## 📜 Scripts Clave (dentro de /backend)
-
-- `pnpm start:dev`: Servidor con hot-reload.
-- `pnpm migration:run`: Sincroniza el esquema usando migraciones.
-- `pnpm seed`: Carga el catálogo base de pizzas e ingredientes.
-- `pnpm build`: Genera el build de producción en `/dist`.
-
-## 📂 Estructura del Proyecto
-
-- `src/ingredients`: Módulo de gestión de ingredientes individuales.
-- `src/pizzas`: Módulo de gestión de pizzas y su asociación con ingredientes.
-- `src/database`: Configuración de DataSource, Migraciones y Seeders.
-- `main.ts`: Punto de entrada con configuraciones de seguridad (Helmet, Rate Limit, etc.).
+- **Framework:** NestJS
+- **API:** GraphQL & REST (Swagger)
+- **ORM:** TypeORM
+- **Database:** PostgreSQL
+- **Security:** Helmet, Rate Limit, Passport (JWT), API Key.
+- **Containerization:** Docker & Docker Compose

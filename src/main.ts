@@ -80,6 +80,7 @@ async function bootstrap() {
     .setDescription('Pizza and Ingredients Management System')
     .setVersion('1.0')
     .addBearerAuth() // Soporte para JWT
+    .addApiKey({ type: 'apiKey', name: 'X-API-KEY', in: 'header' }, 'X-API-KEY') // Soporte para API Key
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

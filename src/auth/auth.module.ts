@@ -15,8 +15,10 @@ import { UsersModule } from '../users/users.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'secretKey',
-        signOptions: { expiresIn: '1h' }, // Access token expira en 1 hora
+        secret: configService.get<string>('JWT_SECRET')!,
+        signOptions: {
+          expiresIn: configService.get<any>('JWT_ACCESS_EXPIRES_IN'),
+        }, // Access token expira dinámicamente
       }),
     }),
   ],

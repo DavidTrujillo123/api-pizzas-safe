@@ -14,8 +14,8 @@ async function bootstrap() {
 
   // Configuration Service
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT', 3000);
-  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
+  const port = configService.get<number>('PORT')!;
+  const nodeEnv = configService.get<string>('NODE_ENV')!;
 
   // Global Validation Pipe
   app.useGlobalPipes(
@@ -27,10 +27,11 @@ async function bootstrap() {
   );
 
   // CORS Configuration from .env
-  const corsOrigin = configService.get<string>('CORS_ORIGIN', '*');
+  const corsOrigin = configService.get<string>('CORS_ORIGIN')!;
+  const corsMethods = configService.get<string>('CORS_METHODS')!;
   app.enableCors({
     origin: corsOrigin === '*' ? '*' : corsOrigin.split(','),
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    methods: corsMethods,
     credentials: true,
   });
 
@@ -63,11 +64,8 @@ async function bootstrap() {
   );
 
   // Rate Limiting from .env
-  const windowMs = configService.get<number>(
-    'RATE_LIMIT_WINDOW_MS',
-    15 * 60 * 1000,
-  );
-  const maxRequests = configService.get<number>('RATE_LIMIT_MAX_REQUESTS', 100);
+  const windowMs = configService.get<number>('RATE_LIMIT_WINDOW_MS')!;
+  const maxRequests = configService.get<number>('RATE_LIMIT_MAX_REQUESTS')!;
 
   app.use(
     rateLimit({
@@ -91,7 +89,7 @@ async function bootstrap() {
   await app.listen(port);
 
   const isPlaygroundEnabled =
-    configService.get<string>('GRAPHQL_PLAYGROUND', 'true') === 'true';
+    configService.get<string>('GRAPHQL_PLAYGROUND') === 'true';
 
   console.log(`\n🚀 Server is running on port: ${port}`);
   console.log(`📍 Environment: ${nodeEnv}`);

@@ -69,14 +69,14 @@ El proyecto se gestiona íntegramente desde el archivo `.env`. Puedes configurar
    pnpm install
    ```
 
-3. **Configurar Base de Datos:**
-   Asegúrate de que las tablas existan y tengan datos de ejemplo:
+3. **Configurar la Base de Datos (Tablas y Datos):**
+   Una vez que el contenedor de Docker esté corriendo, ejecuta estos comandos para crear las tablas y cargar los datos iniciales:
 
    ```bash
-   # Ejecutar migraciones
+   # Crear las tablas (Migraciones)
    pnpm migration:run
 
-   # Poblar con datos iniciales (Margarita, Pepperoni, Hawaiana, etc.)
+   # Cargar datos de prueba (Seeders)
    pnpm seed
    ```
 

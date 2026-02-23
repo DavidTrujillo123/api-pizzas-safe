@@ -26,11 +26,11 @@ export class User {
   password: string;
 
   @ManyToOne(() => Role, (role) => role.users, { eager: true })
-  @JoinColumn({ name: 'role_id' })
+  @JoinColumn({ name: 'roleId' })
   @Field(() => Role)
   role: Role;
 
-  @Column({ name: 'role_id' })
+  @Column({ name: 'roleId', nullable: true })
   roleId: number;
 
   @Field(() => [Device], { nullable: 'itemsAndList' })

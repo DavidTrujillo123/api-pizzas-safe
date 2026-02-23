@@ -32,7 +32,11 @@ export class Pizza {
 
   // Relación N:M
   @ManyToMany(() => Ingredient, { eager: true, cascade: true })
-  @JoinTable()
+  @JoinTable({
+    name: 'pizzas_ingredients_ingredients',
+    joinColumn: { name: 'pizzasId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'ingredientsId', referencedColumnName: 'id' },
+  })
   @Field(() => [Ingredient], {
     nullable: 'items',
     description: 'List of ingredients in the pizza',

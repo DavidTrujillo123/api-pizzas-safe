@@ -22,6 +22,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (isPublic) {
       return true;
     }
+
+    let request;
+    if (context.getType<string>() === 'graphql') {
+      const ctx = GqlExecutionContext.create(context);
+      request = ctx.getContext().req;
+    } else {
+      request = context.switchToHttp().getRequest();
+    }
+
     return super.canActivate(context);
   }
 

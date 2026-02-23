@@ -35,6 +35,25 @@ La API implementa un modelo de seguridad "Zero Trust":
 - **Swagger (REST):** [http://localhost:5431/api/docs](http://localhost:5431/api/docs)
 - **GraphQL Playground:** [http://localhost:5431/graphql](http://localhost:5431/graphql)
 
+#### 🛡️ Consultando GraphQL
+
+Debido a la estricta política de seguridad ("Zero Trust"), el GraphQL Playground integrado está bloqueado por defecto.
+
+Para consultar la API GraphQL (`http://localhost:5431/graphql`), se recomienda utilizar herramientas externas como **Postman**, **Insomnia** o **Apollo Studio**, configurando los siguientes **HTTP Headers** en cada petición:
+
+1. **Obligatorio para TODAS las peticiones (Queries y Mutations):**
+   ```json
+   {
+     "X-API-KEY": "tu-api-key-aqui"
+   }
+   ```
+2. **Obligatorio adicionales para resolvers protegidos (ej. Mutaciones como Admin):**
+   ```json
+   {
+     "Authorization": "Bearer <tu-jwt-token-aqui>"
+   }
+   ```
+
 ### Gestión de Usuarios y Auditoría (Admin)
 
 Se han habilitado endpoints exclusivos para administradores en Swagger:

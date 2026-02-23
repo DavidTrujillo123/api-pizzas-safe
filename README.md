@@ -8,7 +8,7 @@ API robusta construida con **NestJS**, **GraphQL (Apollo)** y **TypeORM (Postgre
 - **Triple Capa de Seguridad:** API Key Global, Autenticación JWT y RBAC (Roles y Permisos).
 - **Documentación Dual:** GraphQL Playground para exploraciones y Swagger para la API REST.
 - **Arquitectura Escalable:** Gestión dinámica de roles y permisos por parte de administradores.
-- **Dockerizado:** Entorno listo para desarrollo con un solo comando.
+- **Dockerizado:** Soporte para contenedores para facilitar el despliegue de la infraestructura.
 - **Historial de Dispositivos:** Registro automático de IP, tipo de dispositivo y geolocalización en cada inicio de sesión.
 
 ---
@@ -26,20 +26,51 @@ La API implementa un modelo de seguridad "Zero Trust":
 
 ## 🛠️ Instalación y Configuración
 
-... (se mantienen los pasos de instalación) ...
+### 1. Clonar y Configurar Entorno
+
+```bash
+cp .env.example .env
+# Ajusta tus credenciales en el archivo .env si es necesario
+```
+
+### 2. Levantar Infraestructura (Opcional)
+
+Si deseas utilizar Docker para la base de datos PostgreSQL, puedes usar el archivo proporcionado:
+
+```bash
+docker-compose up -d
+```
+
+> [!NOTE]  
+> Este paso es opcional. Puedes usar una instancia local de PostgreSQL siempre que configures correctamente las variables en el archivo `.env`.
+
+### 3. Iniciar Aplicación
+
+```bash
+pnpm install
+pnpm start:dev
+```
+
+### 4. Poblar Base de Datos (Opcional)
+
+Puedes ejecutar el seeder para tener datos de prueba iniciales:
+
+```bash
+pnpm seed
+```
 
 ---
 
 ## 📚 Documentación de API
 
-- **Swagger (REST):** [http://localhost:5431/api/docs](http://localhost:5431/api/docs)
-- **GraphQL Playground:** [http://localhost:5431/graphql](http://localhost:5431/graphql)
+- **Swagger (REST):** [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+- **GraphQL API:** `http://localhost:3000/graphql`
 
 #### 🛡️ Consultando GraphQL
 
 Debido a la estricta política de seguridad ("Zero Trust"), el GraphQL Playground integrado está bloqueado por defecto.
 
-Para consultar la API GraphQL (`http://localhost:5431/graphql`), se recomienda utilizar herramientas externas como **Postman**, **Insomnia** o **Apollo Studio**, configurando los siguientes **HTTP Headers** en cada petición:
+Para consultar la API GraphQL, se recomienda utilizar herramientas externas como **Postman**, **Insomnia** o **Apollo Studio**, configurando los siguientes **HTTP Headers** en cada petición:
 
 1. **Obligatorio para TODAS las peticiones (Queries y Mutations):**
    ```json
@@ -79,35 +110,33 @@ La API implementa un modelo de defensa en profundidad con múltiples capas de va
 
 ### 1. Validación Estricta de Entorno (Fail-Fast)
 
-... (se mantiene el contenido previo) ...
+Al iniciar la aplicación, un script nativo verifica que el archivo `.env` contenga todas las variables requeridas. Si alguna falta, el proceso se aborta inmediatamente con un error descriptivo en consola, evitando estados inseguros.
 
 ### 2. Capa de API Key Global
 
-... (se mantiene el contenido previo) ...
+Actúa como el primer nivel de protección, interceptando todas las peticiones antes de llegar a los controladores para asegurar que provengan de clientes autorizados.
 
 ### 3. Autenticación JWT (Identity)
 
-... (se mantiene el contenido previo) ...
+Utiliza Passport para validar la identidad del usuario mediante Access Tokens de corta duración y Refresh Tokens para renovar el acceso de forma segura.
 
 ### 4. RBAC (Control de Acceso Basado en Roles)
 
-... (se mantiene el contenido previo) ...
+Aplica el principio de mínimo privilegio mediante el decorador `@Roles()` y un `RolesGuard`, permitiendo acciones administrativas solo a usuarios con el rol adecuado.
 
 ### 5. Auditoría de Dispositivos y Geolocalización
 
 En cada inicio de sesión exitoso, el sistema captura:
 
-- **IP Address:** Dirección IP del cliente (con soporte para proxies).
-- **Device Type:** Información extraída del User-Agent.
-- **Location:** Ciudad y País determinados mediante la librería `geoip-lite`.
+- **IP Address:** Dirección IP del cliente.
+- **Device Type:** Información del User-Agent.
+- **Location:** Ciudad y País determinados mediante `geoip-lite`.
 - **Timestamp:** Fecha y hora exacta del acceso.
-
-Esta información es consultable por los administradores para detectar accesos sospechosos o comportamientos inusuales.
 
 ### 6. Seguridad de Red y Cabeceras
 
-- **Helmet:** Cubre cabeceras HTTP estándar para prevenir ataques como XSS y Clickjacking.
-- **Rate Limit:** Restringe el número de peticiones por IP en una ventana de tiempo.
+- **Helmet:** Protege contra ataques como XSS y Clickjacking mediante cabeceras HTTP.
+- **Rate Limit:** Mitiga ataques por fuerza bruta limitando las peticiones por IP.
 
 ---
 
